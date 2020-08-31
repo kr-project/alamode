@@ -34,6 +34,19 @@ See [the gallery of visualizations](https://community.modeanalytics.com/gallery)
 	```
 
 ## Making Changes
+
+To test local changes do the following:
+1. Clone the kr-project/alamode fork locally.
+2. Make a branch and changes to the alamode.js / alamode.css files.
+3. Create a mode report or clone an existing one.
+4. Edit the HTML in the report builder to point to the local scripts. The easiest way to do this is to run a simple http server (instructions below).
+
+Running a simple http server:
+1. Run `npm install -g http-server` to globally install a simple http server on your machine.
+2. Run `http-server -c-1` in your alamode fork directory.
+3. There should be output in the console that looks like "Available on http://127.0.0.1:8083"
+4. Load the js and css in your mode report by pointing the script tags at http://127.0.0.1:8083/alamode.js and http://127.0.0.1:8083/alamode.css.
+
 Great! You've created a branch and you've udpated `alamode.js` or `alamode.css` but you're probably wondering how to minify your changes and get them into production. The steps below outline how to minify your code and how to get your changes live. 
 
 ### Minification
