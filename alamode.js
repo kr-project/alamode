@@ -2300,6 +2300,7 @@ var alamode = {
         height = o["chart_height"] || "800",
         colors = o["group_colors"] || "",
         shapes = o["group_shapes"] || "",
+        link_urls = o["group_link_urls"] || "",
         visibleLinks = o["links_to_show"] || 100;
 
     var nodes = alamode.getDataFromQuery(nodeQuery),
@@ -2410,7 +2411,27 @@ var alamode = {
         .attr("class", "mode-force-directed-graph-node")
         .call(force.drag);
 
-    node.append("rect")
+    var curr_node = node;
+    if (link_urls) {
+      curr_node = node.append('a')
+        .attr('href', function(d) {
+          var url = link_urls[d.node_group];
+          while (url.indexOf("{{") != - 1) {
+            var chars = url.length,
+              start = url.indexOf("{{"),
+              end = url.substring(start+2,chars).indexOf("}}"),
+              cName = url.substring(start+2,start+end+2),
+              full = url.substring(start,start+end+4),
+              content = d[cName];
+            url = url.replace(full,content);
+          }
+          return url;
+        })
+        .attr('target', '_top')
+    }
+
+    curr_node
+      .append("rect")
       .attr("width", function(d) { return 2 * nodeSizeScale(d.node_size); })
       .attr("height", function(d) { return 2 * nodeSizeScale(d.node_size); })
       .attr("rx", function(d) {
