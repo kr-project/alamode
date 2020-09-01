@@ -2299,6 +2299,7 @@ var alamode = {
         width = o["chart_width"] || "800",
         height = o["chart_height"] || "800",
         colors = o["group_colors"] || "",
+        shapes = o["group_shapes"] || "",
         visibleLinks = o["links_to_show"] || 100;
 
     var nodes = alamode.getDataFromQuery(nodeQuery),
@@ -2409,17 +2410,29 @@ var alamode = {
         .attr("class", "mode-force-directed-graph-node")
         .call(force.drag);
 
-    node.append("circle")
-        .attr("r", function(d) { return nodeSizeScale(d.node_size); })
-        .style("fill", function(d) {
-          if (colors) {
-            return colors[d.node_group];
-          } else {
-            return "#0E819A";
-          }
-        })
-        .on('mouseover', tip.show)
-        .on('mouseout', tip.hide)
+    node.append("rect")
+      .attr("width", function(d) { return 2 * nodeSizeScale(d.node_size); })
+      .attr("height", function(d) { return 2 * nodeSizeScale(d.node_size); })
+      .attr("rx", function(d) {
+        // Render circle by default
+        if (!shapes || shapes[d.node_group] === 'circle') {
+          return nodeSizeScale(d.node_size);
+        }
+
+        if (shapes[d.node_group] === 'square') {
+          return 0;
+        }
+        // Unsupported shape
+      })
+      .style("fill", function(d) {
+        if (colors) {
+          return colors[d.node_group];
+        } else {
+          return "#0E819A";
+        }
+      })
+      .on('mouseover', tip.show)
+      .on('mouseout', tip.hide)
 
     force.on("tick", function() {
       link.attr("d", function(d) {
@@ -2429,7 +2442,7 @@ var alamode = {
         });
 
       node.attr("transform", function(d) {
-        return "translate(" + d.x + "," + d.y + ")";
+        return "translate(" + (d.x - nodeSizeScale(d.node_size)) + "," + (d.y - nodeSizeScale(d.node_size)) + ")";
       });
     });
   },
