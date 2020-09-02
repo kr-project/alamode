@@ -2359,7 +2359,19 @@ var alamode = {
 
     var svg = d3.select("#" + id).append("svg")
         .attr("width", width)
-        .attr("height", height);
+        .attr("height", height)
+        .call(d3.behavior.zoom()
+          .on("zoomstart", function () {
+            force.stop();
+          })
+          .on("zoom", function() {
+            svg.attr("transform", "translate(" + d3.event.translate + ")" + " scale(" + d3.event.scale + ")");
+          })
+          .on("zoomend", function () {
+            force.resume();
+          })
+        )
+        .append("g");
 
     svg.call(tip);
 
